@@ -19,11 +19,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/companies", companyRoutes);
 
 /* Serve React Frontend */
-const frontendPath = path.join(__dirname, "../cmsapp/build"); // ← updated to your actual frontend folder
+const frontendPath = path.join(__dirname, "../cmsapp/build"); // Path to your React build folder
 app.use(express.static(frontendPath));
 
-// Catch-all route to serve index.html for frontend routing
-app.get("*", (req, res) => {
+// ✅ Catch-all route for React Router (safe with newer Express versions)
+app.get(/^\/(.*)$/, (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
