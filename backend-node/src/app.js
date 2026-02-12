@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const sequelize = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
@@ -13,11 +14,20 @@ app.use(express.json());
 require("./models/UserModel");
 require("./models/Company");
 
-// ✅ TEST ROUTE FOR ROOT
-app.get("/", (req, res) => {
-  res.send("CMS Backend is running 🚀");
+/* API Routes */
+app.use("/api/users", userRoutes);
+app.use("/api/companies", companyRoutes);
+
+/* Serve React Frontend */
+const frontendPath = path.join(__dirname, "../cmsapp/build"); // ← updated to your actual frontend folder
+app.use(express.static(frontendPath));
+
+// Catch-all route to serve index.html for frontend routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
+/* Connect to Database and Start Server */
 sequelize.sync({ alter: true })
   .then(() => {
     console.log("✅ Tables Synced");
@@ -28,7 +38,3 @@ sequelize.sync({ alter: true })
   .catch((err) => {
     console.error("❌ Sync error:", err);
   });
-
-/* Routes */
-app.use("/api/users", userRoutes);
-app.use("/api/companies", companyRoutes);
