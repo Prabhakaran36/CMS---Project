@@ -1,7 +1,7 @@
 const Company = require("../models/Company");
 
 const { getCurrentTime, getCoordinates } = require("../utils/commonValidations");
-const geoService = require("../services/geoService");
+const geoService = require("../services/GeoService");
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const User = require("../models/UserModel");
