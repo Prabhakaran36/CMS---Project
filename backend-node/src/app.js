@@ -11,23 +11,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Load Models
 require("./models/UserModel");
 require("./models/Company");
 
-/* API Routes */
+/* -----------------------------
+   API Routes
+----------------------------- */
 app.use("/api/users", userRoutes);
 app.use("/api/companies", companyRoutes);
 
-/* Serve React Frontend */
-const frontendPath = path.join(__dirname, "../cmsapp/build"); // Path to your React build folder
+/* -----------------------------
+   Serve React Frontend
+----------------------------- */
+const frontendPath = path.join(__dirname, "../cmsapp/build"); // Correct path to your React build
 app.use(express.static(frontendPath));
 
-// ✅ Catch-all route for React Router (safe with newer Express versions)
+// Catch-all route for React Router (works in newer Express versions)
 app.get(/^\/(.*)$/, (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-/* Connect to Database and Start Server */
+/* -----------------------------
+   Connect to Database & Start Server
+----------------------------- */
 sequelize.sync({ alter: true })
   .then(() => {
     console.log("✅ Tables Synced");
