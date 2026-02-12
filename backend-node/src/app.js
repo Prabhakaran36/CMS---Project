@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const sequelize = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
@@ -22,20 +23,36 @@ app.use("/api/users", userRoutes);
 app.use("/api/companies", companyRoutes);
 
 /* -----------------------------
-   Serve React Frontend
+   Serve React Frontend (if exists)
 ----------------------------- */
-const frontendPath = path.join(__dirname, "../cmsapp/build"); // Correct path to your React build
-app.use(express.static(frontendPath));
+const frontendPath = path.join(__dirname, "../cmsapp/build");
 
-// Catch-all route for React Router (works in newer Express versions)
-app.get(/^\/(.*)$/, (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+// Only serve frontend if build folder exists
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+
+  // Catch-all route for React Router
+  app.get(/^\/(.*)$/, (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+
+  console.log("✅ Frontend build folder found. React will be served.");
+} else {
+  console.warn(
+    "⚠️ Frontend build folder not found. Please run 'npm run build' in your React app."
+  );
+}
 
 /* -----------------------------
    Connect to Database & Start Server
 ----------------------------- */
-sequelize.sync({ alter: true })
+sequelize
+  .authenticate()
+  .then(() => console.log("✅ DB Connected"))
+  .catch((err) => console.error("❌ DB Connection Failed:", err));
+
+sequelize
+  .sync({ alter: true })
   .then(() => {
     console.log("✅ Tables Synced");
     app.listen(process.env.PORT || 8080, () =>
