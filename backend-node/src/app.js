@@ -13,6 +13,10 @@ app.use(express.json());
 require("./models/UserModel");
 require("./models/Company");
 
+// ✅ TEST ROUTE FOR ROOT
+app.get("/", (req, res) => {
+  res.send("CMS Backend is running 🚀");
+});
 
 sequelize.sync({ alter: true })
   .then(() => {
