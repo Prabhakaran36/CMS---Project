@@ -22,7 +22,7 @@ async function createUser(req, res) {
     user.dateOfBirth = userRequest.dateOfBirth;
     user.active = userRequest.active;
     user.empId = userRequest.empId;
-    user.company = userRequest.company || null;
+    user.companyId = userRequest.companyId || null;
 
     await user.save();
 

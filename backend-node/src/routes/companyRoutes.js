@@ -11,7 +11,7 @@ router.get("/getAllCompany", controller.getAllCompanies);
 router.get("/:cmpId", controller.getCompanyById);
 
 router.delete("/delete-company/:id", controller.deleteCompany);
-router.put("/update-company/:id", controller.updateCompany);
+router.put("/companies/update-company/:id", controller.updateCompany);
 
 router.post("/:companyId/add-user/:userId", controller.addUserToCompany);
 router.delete("/:companyId/remove-user/:userId", controller.removeUserFromCompany);
